@@ -13,10 +13,8 @@ export const Logo = ({
   className, 
   size = "md", 
   mono = false,
-  link = true
+  link = false
 }: LogoProps) => {
-  // Check if we're inside a Link component to prevent nesting
-  const isInsideLink = document.querySelector('a:hover') !== null;
   const sizes = {
     sm: "text-lg",
     md: "text-xl",
@@ -34,7 +32,7 @@ export const Logo = ({
     </span>
   );
 
-  if (link && !isInsideLink) {
+  if (link) {
     return (
       <Link 
         to="/" 

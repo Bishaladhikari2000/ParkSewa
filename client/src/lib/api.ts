@@ -29,18 +29,24 @@ export const authService = {
     // Check predefined credentials first
     if (email === import.meta.env.VITE_ADMIN_EMAIL && password === import.meta.env.VITE_ADMIN_PASSWORD) {
       const user = { name: 'Admin', role: 'admin', email: email };
+      const token = 'admin-token';
       localStorage.setItem('user', JSON.stringify(user));
-      return { user };
+      localStorage.setItem('token', token);
+      return { user, token };
     }
     if (email === import.meta.env.VITE_PARKING_OWNER_EMAIL && password === import.meta.env.VITE_PARKING_OWNER_PASSWORD) {
       const user = { name: 'Parking Owner', role: 'parking_owner', email: email };
+      const token = 'owner-token';
       localStorage.setItem('user', JSON.stringify(user));
-      return { user };
+      localStorage.setItem('token', token);
+      return { user, token };
     }
     if (email === import.meta.env.VITE_DEMO_USER_EMAIL && password === import.meta.env.VITE_DEMO_USER_PASSWORD) {
       const user = { name: 'Demo User', role: 'user', email: email };
+      const token = 'user-token';
       localStorage.setItem('user', JSON.stringify(user));
-      return { user };
+      localStorage.setItem('token', token);
+      return { user, token };
     }
 
     // Fallback to API authentication

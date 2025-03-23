@@ -1,13 +1,14 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { authService } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -26,6 +27,7 @@ const formSchema = z.object({
   password: z.string().min(6, {
     message: "Password must be at least 6 characters",
   }),
+  rememberMe: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -34,18 +36,31 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
 
   const onSubmit = async (values: FormValues) => {
     try {
-      const { user } = await authService.login(values.email, values.password);
+      const response = await login(values.email, values.password);
+      
+      // Store credentials if remember me is checked
+      if (values.rememberMe) {
+        localStorage.setItem("rememberedEmail", values.email);
+        localStorage.setItem("rememberedPassword", btoa(values.password)); // Basic encoding
+      } else {
+        localStorage.removeItem("rememberedEmail");
+        localStorage.removeItem("rememberedPassword");
+      }
+      
+      const { user } = response;
       
       toast({
         title: "Login successful",
@@ -53,13 +68,13 @@ const Login = () => {
       });
       
       // Redirect based on user role
-      let redirectPath = "/dashboard";
-      if (user.role === "admin") {
-        redirectPath = "/dashboard/admin";
-      } else if (user.role === "parking_owner") {
-        redirectPath = "/dashboard/owner";
-      }
-      navigate(redirectPath);
+      const redirectPath = 
+        user.role === "admin" ? "/dashboard/admin" :
+        user.role === "parking_owner" ? "/dashboard/owner" :
+        "/dashboard/user";
+      
+      // Use replace to prevent going back to login page
+      navigate(redirectPath, { replace: true });
     } catch (error) {
       toast({
         variant: "destructive",
@@ -131,7 +146,22 @@ const Login = () => {
                 </FormItem>
               )}
             />
-
+            <FormField
+              control={form.control}
+              name="rememberMe"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormLabel className="font-normal">Remember me</FormLabel>
+                </FormItem>
+              )}
+            />
+            
             <div className="flex justify-end">
               <Link 
                 to="/forgot-password" 

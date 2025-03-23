@@ -53,27 +53,17 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     {
       icon: LayoutDashboard,
       label: "Dashboard",
-      path: "/dashboard",
+      path: "/dashboard/admin",
     },
     {
-      icon: Car,
-      label: "Book Parking",
-      path: "/dashboard/book",
-    },
-    {
-      icon: Clock,
-      label: "Active Bookings",
-      path: "/dashboard/active",
-    },
-    {
-      icon: FileText,
-      label: "History",
-      path: "/dashboard/history",
+      icon: User,
+      label: "User Management",
+      path: "/dashboard/admin/users",
     },
     {
       icon: Settings,
       label: "Settings",
-      path: "/dashboard/settings",
+      path: "/dashboard/admin/settings",
     },
   ];
 
