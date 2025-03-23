@@ -27,10 +27,24 @@ VITE_API_URL=http://localhost:3000
 ### Server (.env)
 
 ```
-PORT=3000
+PORT=5000
 MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRES_IN=24h
+
+# Predefined User Credentials (Change these in production)
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=your_admin_password
+PARKING_OWNER_EMAIL=owner@example.com
+PARKING_OWNER_PASSWORD=your_owner_password
 ```
+
+> ⚠️ **Security Note**:
+>
+> - Never commit the actual `.env` file to version control
+> - Keep your MongoDB connection string and JWT secret secure
+> - Change all default credentials in production
+> - Consider using a secure secret management service for production deployments
 
 ## Technologies Used
 
